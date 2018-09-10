@@ -146,6 +146,10 @@ class BuildConfig {
     return nodeLabels.getBenchmarkNodeLabel()
   }
 
+  String getGPUBenchmarkNodeLabel() {
+      return nodeLabels.getGPUBenchmarkNodeLabel()
+  }
+
   String getGPUNodeLabel() {
     return nodeLabels.getGPUNodeLabel()
   }
@@ -355,17 +359,19 @@ class BuildConfig {
   }
 
   static enum NodeLabels {
-    LABELS_C1('docker && !mr-0xc8', 'mr-0xc9', 'gpu && !2gpu'),
-    LABELS_B4('docker', 'docker', 'gpu && !2gpu')
+    LABELS_C1('docker && !mr-0xc8', 'mr-0xc9', 'gpu && !2gpu', 'mr-dl3'),
+    LABELS_B4('docker', 'docker', 'gpu && !2gpu', 'mr-dl3')
 
     private final String defaultNodeLabel
     private final String benchmarkNodeLabel
     private final String gpuNodeLabel
+    private final String gpuBenchmarkNodeLabel
 
-    private NodeLabels(final String defaultNodeLabel, final String benchmarkNodeLabel, final String gpuNodeLabel) {
+    private NodeLabels(final String defaultNodeLabel, final String benchmarkNodeLabel, final String gpuNodeLabel, final String gpuBenchmarkNodeLabel) {
       this.defaultNodeLabel = defaultNodeLabel
       this.benchmarkNodeLabel = benchmarkNodeLabel
       this.gpuNodeLabel = gpuNodeLabel
+      this.gpuBenchmarkNodeLabel = gpuBenchmarkNodeLabel
     }
 
     String getDefaultNodeLabel() {
@@ -374,6 +380,10 @@ class BuildConfig {
 
     String getBenchmarkNodeLabel() {
       return benchmarkNodeLabel
+    }
+
+    String getGPUBenchmarkNodeLabel() {
+      return gpuBenchmarkNodeLabel
     }
 
     String getGPUNodeLabel() {
