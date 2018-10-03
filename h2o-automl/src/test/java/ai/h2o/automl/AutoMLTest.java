@@ -1,7 +1,9 @@
 package ai.h2o.automl;
 
+import hex.Model;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import water.DKV;
 import water.Key;
 import water.fvec.Frame;
 
@@ -38,25 +40,30 @@ public class AutoMLTest extends TestUtil {
   }
 
   @Test public void KeepCrossValidationFoldAssignmentTest() {
-    AutoML aml=null;
-    Frame fr=null;
+    AutoML aml = null;
+    Frame fr = null;
+    Model leader = null;
     try {
       AutoMLBuildSpec autoMLBuildSpec = new AutoMLBuildSpec();
       fr = parse_test_file("./smalldata/airlines/allyears2k_headers.zip");
       autoMLBuildSpec.input_spec.training_frame = fr._key;
       autoMLBuildSpec.input_spec.response_column = "IsDepDelayed";
-      autoMLBuildSpec.build_control.stopping_criteria.set_max_runtime_secs(5);
+      autoMLBuildSpec.build_control.stopping_criteria.set_max_models(1);
+      autoMLBuildSpec.build_control.stopping_criteria.set_max_runtime_secs(30);
       autoMLBuildSpec.build_control.keep_cross_validation_fold_assignment = true;
 
       aml = AutoML.makeAutoML(Key.<AutoML>make(), new Date(), autoMLBuildSpec);
       AutoML.startAutoML(aml);
       aml.get();
 
-      assertTrue(aml.leader() !=null && aml.leader()._parms._keep_cross_validation_fold_assignment);
-      assertTrue(aml.leader() !=null && aml.leader()._output._cross_validation_fold_assignment_frame_id != null);
+      leader = aml.leader();
+
+      assertTrue(leader !=null && leader._parms._keep_cross_validation_fold_assignment);
+      assertTrue(leader !=null && leader._output._cross_validation_fold_assignment_frame_id != null);
 
     } finally {
-      // cleanup
+      // Since user asked to keep cv fold assignments( we set parameter `keep_cross_validation_fold_assignment` to true) we need to remove this key manually
+      DKV.remove(leader._output._cross_validation_fold_assignment_frame_id);
       if(aml!=null) aml.deleteWithChildren();
       if(fr != null) fr.remove();
     }
