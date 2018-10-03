@@ -6,7 +6,6 @@ import hex.Model;
 import hex.ModelBuilder;
 import hex.StackedEnsembleModel;
 import hex.deeplearning.DeepLearningModel;
-import hex.ensemble.StackedEnsemble;
 import hex.glm.GLMModel;
 import hex.grid.Grid;
 import hex.grid.GridSearch;
@@ -558,7 +557,7 @@ public final class AutoML extends Lockable<AutoML> implements TimedH2ORunnable {
     // TODO: handle error_count and messages
 
     Log.debug("Training model: " + algoName + ", time remaining (ms): " + timeRemainingMs());
-    return builder.trainModel();
+    return builder.trainModelOnH2ONode();
   }
 
   private Key<Grid> gridKey(String algoName) {
