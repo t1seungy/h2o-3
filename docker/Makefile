@@ -121,6 +121,14 @@ ifeq ($(PUSH),1)
 	docker push docker.h2o.ai/opsh2oai/h2o-3/dev-build-gradle-$*$(GPU_SUFFIX):$(VERSION)
 endif
 
+dev-benchmark-gradle-%: dev-build-gradle-$(GRADLE_VERSION)
+	docker build -t docker.h2o.ai/opsh2oai/h2o-3/dev-benchmark-gradle-$*$(GPU_SUFFIX):$(VERSION) \
+		-f jenkins-images/Dockerfile-benchmark \
+		--build-arg GPU_SUFFIX=$(GPU_SUFFIX) \
+		--build-arg FROM_VERSION=$(VERSION) \
+		--build-arg GRADLE_VERSION=$(GRADLE_VERSION) \
+		.
+
 dev-build-hadoop-gradle-%: dev-build-gradle-$(GRADLE_VERSION)
 	docker build -t docker.h2o.ai/opsh2oai/h2o-3/dev-build-hadoop-gradle-$*$(GPU_SUFFIX):$(VERSION) \
 		-f jenkins-images/Dockerfile-build-hadoop \
