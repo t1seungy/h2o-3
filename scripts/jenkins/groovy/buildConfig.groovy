@@ -261,6 +261,12 @@ class BuildConfig {
     return "${DOCKER_REGISTRY}/opsh2oai/h2o-3/dev-${imageComponentName}-${version}:${DEFAULT_IMAGE_VERSION_TAG}"
   }
 
+  String getGPUBenchmarkImage() {
+    // FIXME set correct version
+    return "${DOCKER_REGISTRY}/opsh2oai/h2o-3/dev-benchmark-gradle-${getCurrentGradleVersion()}-gpu:dev"
+
+  }
+
   String getXGBNodeLabelForEnvironment(final Map xgbEnv) {
     switch (xgbEnv.targetName) {
       case XGB_TARGET_GPU:

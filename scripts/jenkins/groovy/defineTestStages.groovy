@@ -205,7 +205,7 @@ def call(final pipelineContext) {
       additionalTestPackages: [pipelineContext.getBuildConfig().COMPONENT_R],
       customData: [algorithm: 'xgb'], makefilePath: pipelineContext.getBuildConfig().BENCHMARK_MAKEFILE_PATH,
       nodeLabel: pipelineContext.getBuildConfig().getGPUBenchmarkNodeLabel(),
-      xgbGPU: true, customDockerArgs: ['--runtime=nvidia']
+      gpu: true, customDockerArgs: ['--runtime=nvidia'], image: pipelineContext.getBuildConfig().getGPUBenchmarkImage()
     ],
     [
       stageName: 'Vanilla GPU XGB Benchmark', executionScript: 'h2o-3/scripts/jenkins/groovy/benchmarkStage.groovy',
@@ -213,7 +213,7 @@ def call(final pipelineContext) {
       additionalTestPackages: [pipelineContext.getBuildConfig().COMPONENT_PY],
       customData: [algorithm: 'xgb-vanilla'], makefilePath: pipelineContext.getBuildConfig().BENCHMARK_MAKEFILE_PATH,
       nodeLabel: pipelineContext.getBuildConfig().getGPUBenchmarkNodeLabel(),
-      xgbGPU: true, customDockerArgs: ['--runtime=nvidia']
+      gpu: true, customDockerArgs: ['--runtime=nvidia'], image: pipelineContext.getBuildConfig().getGPUBenchmarkImage()
     ],
     [
       stageName: 'DMLC GPU XGB Benchmark', executionScript: 'h2o-3/scripts/jenkins/groovy/benchmarkStage.groovy',
@@ -221,7 +221,7 @@ def call(final pipelineContext) {
       additionalTestPackages: [pipelineContext.getBuildConfig().COMPONENT_R],
       customData: [algorithm: 'xgb-dmlc'], makefilePath: pipelineContext.getBuildConfig().BENCHMARK_MAKEFILE_PATH,
       nodeLabel: pipelineContext.getBuildConfig().getGPUBenchmarkNodeLabel(),
-      xgbGPU: true, customDockerArgs: ['--runtime=nvidia']
+      gpu: true, customDockerArgs: ['--runtime=nvidia'], image: pipelineContext.getBuildConfig().getGPUBenchmarkImage()
     ]
   ]
 
@@ -453,7 +453,7 @@ private void executeInParallel(final jobs, final pipelineContext) {
           archiveFiles = c['archiveFiles']
           activatePythonEnv = c['activatePythonEnv']
           customDockerArgs = c['customDockerArgs']
-          xgbGPU = c['xgbGPU']
+          gpu = c['gpu']
         }
       }
     ]
@@ -497,8 +497,8 @@ private void invokeStage(final pipelineContext, final body) {
   if (config.installRPackage == null) {
       config.installRPackage = true
   }
-  if (config.xgbGPU == null) {
-      config.xgbGPU = false
+  if (config.gpu == null) {
+      config.gpu = false
   }
 
   if (config.activatePythonEnv == null) {

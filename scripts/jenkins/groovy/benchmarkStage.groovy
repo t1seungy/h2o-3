@@ -22,8 +22,8 @@ def call(final pipelineContext, final stageConfig) {
 
   def prepareBenchmarkFolderConfig = pipelineContext.getPrepareBenchmarkDirStruct(this, ML_BENCHMARK_ROOT)
   def s3AlgorithFolder = stageConfig.customData.algorithm
-  if (stageConfig.xgbGPU) {
-      s3AlgorithFolder = "-xgb"
+  if (stageConfig.gpu) {
+      s3AlgorithFolder = "-gpu"
   }
   def benchmarkFolderConfig = prepareBenchmarkFolderConfig(s3AlgorithFolder, env.GIT_SHA, env.BRANCH_NAME)
   GString outputPath = "${env.workspace}/${pipelineContext.getUtils().stageNameToDirName(stageConfig.stageName)}/${benchmarkFolderConfig.getOutputDir()}"
@@ -38,7 +38,8 @@ def call(final pipelineContext, final stageConfig) {
           "GIT_DATE=${env.GIT_DATE.replaceAll(' ', '-')}",
           "BENCHMARK_ALGORITHM=${stageConfig.customData.algorithm}",
           "BUILD_ID=${env.BUILD_ID}",
-          "H2O_JAR_PATH=${H2O_ROOT}/build/h2o.jar"
+          "H2O_JAR_PATH=${H2O_ROOT}/build/h2o.jar",
+          "GPU=${stageConfig.gpu ? 'true' : 'false'}"
   ]
 
   try {
